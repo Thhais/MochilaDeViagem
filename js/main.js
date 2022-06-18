@@ -4,7 +4,7 @@ const itens = JSON.parse(localStorage.getItem("itens")) || []
 
 itens.forEach((elemento) => {
     PreencheLista(elemento)
-   
+  
 })
 
 form.addEventListener("submit", (evento) => {
@@ -24,13 +24,22 @@ form.addEventListener("submit", (evento) => {
     if(existe){
         itemAtual.id = existe.id
         AtualizaElemento(itemAtual)
-        itens[existe.id] = itemAtual //sobrescrevendo o localStorage na posição existe.id
+        //itens[existe.id] = itemAtual //sobrescrevendo o localStorage na posição existe.id == LOGICA ANTIGA, DAVA CERTO ENQUANTO APAENAS ATT O ÚLTIMO
+        const indexExiste = itens.findIndex(elemento => elemento.id === existe.id)
+        itens[indexExiste] = itemAtual
 
     }else{
-        itemAtual.id = itens.length
+       // itemAtual.id = itens.length  -> lógica antiga
+       const tamanho = itens.length
 
-        itens.push(itemAtual)
-       
+       if(tamanho == 0){
+            itemAtual.id = 0
+       }else{
+            itemAtual.id  = itens[tamanho-1].id + 1
+       }
+
+        itens.push(itemAtual) //push adiciona na última posição do array
+        
         PreencheLista(itemAtual)
     }
  
@@ -54,17 +63,32 @@ function PreencheLista(itemAtual){
     li.appendChild(strong)
     li.innerHTML += itemAtual.nome
 
-    
+    li.appendChild(buttonDelete(itemAtual.id))
     lista.appendChild(li)
 
 
 }
-
-
-
 function AtualizaElemento(itemAtualiza){
    document.querySelector("[data-id='"+itemAtualiza.id+"']").innerHTML = itemAtualiza.quantidade
 
 }
+function buttonDelete(id){
+    const botao = document.createElement('button')
+    botao.innerHTML = "X"
 
+    botao.addEventListener('click', function () {
+       removeTag(this.parentNode,id)
+       
+    }
+    )
+    
+      return botao
+}
 
+ function removeTag(tag, id){
+    tag.remove()
+   //itens.splice(id,1) -> da erro porque quando deletamos um item no array ele não deixa aquela posição vazia e sim realoca dinamicamente, logo o id (itemAtual.id) não está mais relacionado com a posição no array itens
+    
+   itens.splice(itens.findIndex(elemento => elemento.id === id), 1) //encontra o index onde tem um item  === id
+   localStorage.setItem("itens", JSON.stringify(itens))
+}
