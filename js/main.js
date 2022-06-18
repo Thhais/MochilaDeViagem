@@ -24,7 +24,7 @@ form.addEventListener("submit", (evento) => {
     if(existe){
         itemAtual.id = existe.id
         AtualizaElemento(itemAtual)
-        //itens[existe.id] = itemAtual //sobrescrevendo o localStorage na posição existe.id == LOGICA ANTIGA, DAVA CERTO ENQUANTO APAENAS ATT O ÚLTIMO
+        //itens[existe.id] = itemAtual //sobrescrevendo o localStorage na posição existe.id == LOGICA ANTIGA, DAVA CERTO ENQUANTO APENAS ATT O ÚLTIMO
         const indexExiste = itens.findIndex(elemento => elemento.id === existe.id)
         itens[indexExiste] = itemAtual
 
